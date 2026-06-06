@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - College Admission Portal{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Total Applications</h5>
+                <h2>{{ total_applications }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Pending</h5>
+                <h2>{{ pending }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Approved</h5>
+                <h2>{{ approved }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Rejected</h5>
+                <h2>{{ rejected }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <a href="{{ url_for('manage_programs') }}" class="btn btn-secondary">Manage Programs</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5>All Applications</h5>
+            </div>
+            <div class="card-body">
+                {% if applications %}
+                <table class="table table-hover table-sm">
+                    <thead>
+                        <tr>
+                            <th>Applicant Name</th>
+                            <th>Email</th>
+                            <th>Program</th>
+                            <th>Status</th>
+                            <th>Applied On</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                        <tr>
+                            <td>{{ app.full_name }}</td>
+                            <td>{{ app.email }}</td>
+                            <td>{{ app.program }}</td>
+                            <td>
+                                {% if app.status == 'approved' %}
+                                    <span class="badge bg-success">Approved</span>
+                                {% elif app.status == 'rejected' %}
+                                    <span class="badge bg-danger">Rejected</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ app.applied_at.split(' ')[0] if app.applied_at else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('view_application', app_id=app.id) }}" class="btn btn-sm btn-info">Review</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No applications found.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

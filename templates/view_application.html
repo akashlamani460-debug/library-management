@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}View Application - College Admission Portal{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4>Application Details</h4>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Status:</h5>
+                        {% if application.status == 'approved' %}
+                            <span class="badge bg-success fs-6">Approved</span>
+                        {% elif application.status == 'rejected' %}
+                            <span class="badge bg-danger fs-6">Rejected</span>
+                        {% else %}
+                            <span class="badge bg-warning fs-6">Pending Review</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h5>Personal Information</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Full Name:</strong> {{ application.full_name }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Email:</strong> {{ application.email }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Date of Birth:</strong> {{ application.dob }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Gender:</strong> {{ application.gender }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Phone:</strong> {{ application.phone }}
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Address</h5>
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        {{ application.address }}, {{ application.city }}, {{ application.state }} {{ application.zip_code }}, {{ application.country }}
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Academic Information</h5>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Program:</strong> {{ application.program }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Academic Year:</strong> {{ application.academic_year }}
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>GPA:</strong> {{ application.gpa or 'N/A' }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Entrance Exam Score:</strong> {{ application.entrance_exam_score or 'N/A' }}
+                    </div>
+                </div>
+
+                <h5 class="mt-4">Additional Information</h5>
+                <div class="mb-3">
+                    <strong>Extracurricular Activities:</strong>
+                    <p>{{ application.extracurricular or 'N/A' }}</p>
+                </div>
+
+                <div class="mb-3">
+                    <strong>Essay:</strong>
+                    <p>{{ application.essay or 'N/A' }}</p>
+                </div>
+
+                {% if documents %}
+                <h5 class="mt-4">Uploaded Documents</h5>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Document Type</th>
+                            <th>Uploaded</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doc in documents %}
+                        <tr>
+                            <td>{{ doc.document_type }}</td>
+                            <td>{{ doc.uploaded_at.split(' ')[0] if doc.uploaded_at else 'N/A' }}</td>
+                            <td>
+                                <a href="{{ url_for('static', filename='../' + doc.file_path) }}" class="btn btn-sm btn-info" download>Download</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+
+                {% if session.role == 'admin' %}
+                <div class="mt-4">
+                    <h5>Admin Actions</h5>
+                    <form method="POST" action="{{ url_for('update_application_status', app_id=application.id) }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <select class="form-control" name="status" required>
+                                    <option value="pending" {% if application.status == 'pending' %}selected{% endif %}>Pending</option>
+                                    <option value="approved" {% if application.status == 'approved' %}selected{% endif %}>Approved</option>
+                                    <option value="rejected" {% if application.status == 'rejected' %}selected{% endif %}>Rejected</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-success w-100">Update Status</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+
+                <div class="mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

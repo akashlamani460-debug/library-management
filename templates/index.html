@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Home - College Admission Portal{% endblock %}
+
+{% block content %}
+<div class="row align-items-center">
+    <div class="col-lg-6">
+        <div class="card bg-white">
+            <div class="card-body p-5">
+                <h1 class="card-title mb-4">Welcome to College Admission Portal</h1>
+                <p class="card-text lead">Apply to your dream college with ease. Our comprehensive admission system makes the application process simple and transparent.</p>
+                
+                <div class="features mt-4">
+                    <h5>Key Features:</h5>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check"></i> Easy Application Form</li>
+                        <li><i class="fas fa-check"></i> Document Upload</li>
+                        <li><i class="fas fa-check"></i> Real-time Status Tracking</li>
+                        <li><i class="fas fa-check"></i> Secure & Confidential</li>
+                    </ul>
+                </div>
+
+                {% if not session.user_id %}
+                <div class="mt-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-2">Get Started</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">Sign In</a>
+                </div>
+                {% else %}
+                <div class="mt-4">
+                    <a href="{{ url_for('new_application') }}" class="btn btn-primary btn-lg">Apply Now</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="text-center">
+            <img src="https://via.placeholder.com/400x400?text=College+Admission" class="img-fluid rounded" alt="Admission">
+        </div>
+    </div>
+</div>
+{% endblock %}
